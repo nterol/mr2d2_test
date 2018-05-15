@@ -2,7 +2,7 @@
 // @flow
 
 import React, { Component } from 'react';
-import UserList from './Components/UserList';
+import UserList from './src/components/UserList';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import {
@@ -164,7 +164,9 @@ const Tabs = createBottomTabNavigator({
   }),
   tabBarOptions: {
     activeTintColor: 'tomato',
-    inactiveTintColor: 'gray'
+    inactiveTintColor: 'gray',
+    swipeEnabled: true,
+    lazy: false
   },
 }
 )
