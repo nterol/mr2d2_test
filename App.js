@@ -3,6 +3,7 @@
 
 import React, { Component } from 'react';
 import UserList from './src/components/UserList';
+import SignIn from './src/components/SignIn';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import {
@@ -98,7 +99,7 @@ class ModalScreen extends Component {
     console.log("Modal props:", this.props);
     return (
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-        <Text style={{fontSize: 30}}>I am Modal</Text>
+        <SignIn />
         <Button
           onPress={() => this.props.navigation.goBack()}
           title="Dismiss"
