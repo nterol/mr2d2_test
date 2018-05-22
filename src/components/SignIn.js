@@ -63,8 +63,16 @@ export default class SignIn extends Component {
                     axios.post( url, data)
                         .then(res => {
                             const [u] = res.data.user;
-                            console.log("U", u);
-                            AsyncStorage.setItem('user', u);
+                            console.log("U : ", u);
+                            const {authentication_token: auth} = u;
+                            // const auth = u.authentication_token;
+                            console.log("AUTH TOKEN", auth);
+                            // const [u] = res.data.user;
+
+                            // Voila pourquoi on ne peut pas se contenter de cette solution. 
+                            // On ne peut stocker que des chaines de caractères, une par une.
+                            // Et c'est une promesse. Donc c'est l'horreur.
+                            AsyncStorage.setItem('token', JSON.stringify(auth));
                         })
                         .catch(e => console.log('Axios error', e));
                     // } else {
@@ -79,6 +87,8 @@ export default class SignIn extends Component {
             //         warning: "Ces identifiants ne sont pas reconnus"
             //     })
             // }
+
+            // J'ai commenté tout ça qui fonctionne pour pouvoir gagner du temps en débogage.
         }
         
         render() {
