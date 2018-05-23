@@ -6,7 +6,7 @@ export default class Logo extends Component {
     return (
       <Image
         source={require('../assets/beacon.png')}
-        style={{width: 50, height: 50}}
+        style={{width: 100, height: 100}}
       />
     );
   }

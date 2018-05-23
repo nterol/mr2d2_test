@@ -6,17 +6,29 @@ import {
     StyleSheet,
     StatusBar
 } from 'react-native';
+import Logo from '../components/Logo';
 
-export class LoadingScreen extends Component {
+export default class LoadingScreen extends Component {
+
+    //
+
+    constructor() {
+        super();
+        this.getAsyncStorage();
+    }
     
     getAsyncStorage = async () => {
-        const user = await AsyncStorage.getItem('logged');
-        this.navigation.navigate(user ? 'App' : 'Auth');
+        console.log('Init');
+        const user = await AsyncStorage.getItem('token');
+        console.log(`Done, user : ${user}`);
+        this.props.navigation.navigate(user ? 'Home' : 'Auth');
     };
+
 
     render() {
         return (
-            <View>
+            <View style={styles.container}>
+                <Logo/>
                 <ActivityIndicator/>
                 <StatusBar hidden={true}/>
             </View>
@@ -24,10 +36,10 @@ export class LoadingScreen extends Component {
     }
 }
 
-const styles= Stylesheet.create({
+const styles= StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
-    },
+    }
 });
