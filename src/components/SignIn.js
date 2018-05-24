@@ -40,7 +40,7 @@ class SignIn extends Component {
                 ...this.state, 
                 connexion: {...connectionInfo}});
         });
-        const connexionChange = NetInfo.addEventListener('connectionChange', (networkType) => {
+        NetInfo.addEventListener('connectionChange', (networkType) => {
             console.log("NETWORK CHANGES", networkType);
             this.setState({
                 ...this.state, 
@@ -80,6 +80,7 @@ class SignIn extends Component {
                     console.log("REQ GO");
                     axios.post( url, data)
                         .then(res => {
+                            console.log(res.data);
 
                             // Epique moment de destructuring ES6/7
                             const [u] = res.data.user;
@@ -89,6 +90,7 @@ class SignIn extends Component {
                             // On ne peut stocker que des chaines de caractères, une par une.
                             // Et c'est une promesse. Donc c'est l'horreur.
                             AsyncStorage.setItem('token', auth);
+                            
                             this.props.navigation.navigate('Home');
                         })
                         .catch(e => console.log('Axios error', e));
