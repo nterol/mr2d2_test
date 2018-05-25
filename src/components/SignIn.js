@@ -11,6 +11,7 @@ import { withNavigation } from 'react-navigation';
 import axios from 'axios';
 import {formStyles} from '../styles/';
 import makeCancelable from '../helpers/makeCancelable';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 
 class SignIn extends Component {
@@ -97,8 +98,7 @@ class SignIn extends Component {
 
         // console.log(`À valider :${lowEmail}, ${lowPassword}`);
         // if (lowPassword === 'demos2016' && lowEmail === 'adm105@recette32.com') {
-            // NetInfo.isConnected.fetch().then(isConnected => {
-            //     if (isConnected) {
+            // if (this.s)
                     const data = {
                         "user" : {
                             "email": 'adm105@recette32.com',
@@ -121,8 +121,17 @@ class SignIn extends Component {
                         const {authentication_token: auth} = u;
                         this.setState({...this.state, loading: false});
                         AsyncStorage.setItem('token', auth);
+                        // return RNFetchBlob.fetch('GET', JSONS.stringigy(u.lib_avat_url))
                         // return Promise.all([AsyncStorage.setItem('token', auth), axios.get(u.lib_avat_url)])
-                     }) .catch(e => console.log("Error", e))
+                     }).then(res => {
+                         
+                        //  console.log("VANILLA RES", res);
+                        //  let base64 = res.base64();
+                        //  let text = res.text();
+                        //  let json = res.json();
+                        //  console.log(base64 + ' '+ text + ' ' + json);
+                     })
+                     .catch(e => console.log("Error", e))
                     
                     // } else {
                     //     this.setState({...this.state, warning: "Vous n'êtes pas encore connecté..."})

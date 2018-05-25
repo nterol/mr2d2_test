@@ -46,7 +46,6 @@ export default class HomeScreen extends Component {
     }
   
     render() {
-      console.log("ALREADY", this.state.logIn);
       const {navigation} = this.props;
       let {results} = this.state;
       return (
