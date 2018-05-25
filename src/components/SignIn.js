@@ -1,15 +1,17 @@
 import React , {Component} from 'react';
-import {View, Text, NetInfo, AsyncStorage} from 'react-native';
+import {View, Text, NetInfo, AsyncStorage, ActivityIndicator} from 'react-native';
 import {
     Card,
     FormInput,
     FormLabel,
     Button,
-    FormValidationMessage
+    FormValidationMessage,
 } from 'react-native-elements';
 import { withNavigation } from 'react-navigation';
 import axios from 'axios';
-import {formStyles} from '../styles/'
+import {formStyles} from '../styles/';
+import makeCancelable from '../helpers/makeCancelable';
+
 
 class SignIn extends Component {
 
@@ -18,14 +20,14 @@ class SignIn extends Component {
         password: '',
         warning: '',
         connexion: {},
-        already: false
+        already: false,
+        loading: false
     }
 
     componentWillMount() {
         console.log('1');
         AsyncStorage.getItem('token')
         .then(user => {
-            console.log('4');
             this.setState({...this.state, already: user ? true : false})
         });
     }
@@ -33,29 +35,57 @@ class SignIn extends Component {
     componentDidMount() {
 
         // Test de la fonction NetInfo.
-        console.log('3');
+        
         NetInfo.getConnectionInfo().then(connectionInfo => {
             console.log("GET NET INFO", connectionInfo); 
             this.setState({
-                ...this.state, 
+                ...this.state,
+                loading: false, 
                 connexion: {...connectionInfo}});
         });
         NetInfo.addEventListener('connectionChange', (networkType) => {
             console.log("NETWORK CHANGES", networkType);
             this.setState({
                 ...this.state, 
+                loading: false,
                 connexion: {...networkType}});
             }
         );
     }
 
+    componentWillUnmount() {
+        console.log("Component will unmount");
+        this.cancelable.cancel();
+    }
 
     // On ne fait que récupérer les valeurs changées onChange et les stocker dans le state
     // Equivalent à ecrire function(event) {return this.setState(...);}
     // Sauf que cette écriture typique d'ES6 ne necessite pas de rebinder la méthode dans un constructeur
     setMail = (e) => this.setState({...this.state, email: e});
     setPass = (e) => this.setState({...this.state, password: e});
+
+    // axios.post(url, data)
+    // .then(res => {
+    //     console.log(res.data);
+    //     // Epique moment de destructuring ES6/7
+    //     const [u] = res.data.user;
+    //     const {authentication_token: auth} = u;
+    //     AsyncStorage.setItem('token', auth);
+    //     // return axios.get(u.lib_avat_url);
+    //     // this.props.navigation.navigate('Auth');
+    //     console.log('request done')
+        
+    //     //lib_avat_url
+    // // }).then(newQuery => {
+    // //     console.log("SECOND REQUEST", newQuery);
+    // //     // this.setState({...this.state, loading: false});
+    // //     // this.props.navigation.navigate('Home');
+    // }).catch(e => console.log('Axios error', e));
     
+    
+        
+    // cancelable = (url, data) => makeCancelable(axios.post(url, data));
+
     signInSubmit = () => {
         const {password, email} = this.state;
         const lowEmail = email.toLowerCase();
@@ -78,22 +108,22 @@ class SignIn extends Component {
                     const url= 'https://api-recette32.mobiler2d2.net/mobileapi/users/sign_in';
                     //La partie qui suit serait traitée en Action/ par redux-thunk...
                     console.log("REQ GO");
-                    axios.post( url, data)
-                        .then(res => {
-                            console.log(res.data);
+                    this.setState({...this.state, loading: true});
+                    
 
-                            // Epique moment de destructuring ES6/7
-                            const [u] = res.data.user;
-                            const {authentication_token: auth} = u;
+                    // this.newQuery(url, data)
+                    
+                    this.cancelable = makeCancelable(axios.post(url, data)); //this.cancelable(url, data)
 
-                            // Voila pourquoi on ne peut pas se contenter de cette solution. 
-                            // On ne peut stocker que des chaines de caractères, une par une.
-                            // Et c'est une promesse. Donc c'est l'horreur.
-                            AsyncStorage.setItem('token', auth);
-                            
-                            this.props.navigation.navigate('Home');
-                        })
-                        .catch(e => console.log('Axios error', e));
+                    this.cancelable.promise
+                    .then(res => {
+                        const [u] = res.data.user;
+                        const {authentication_token: auth} = u;
+                        this.setState({...this.state, loading: false});
+                        AsyncStorage.setItem('token', auth);
+                        // return Promise.all([AsyncStorage.setItem('token', auth), axios.get(u.lib_avat_url)])
+                     }) .catch(e => console.log("Error", e))
+                    
                     // } else {
                     //     this.setState({...this.state, warning: "Vous n'êtes pas encore connecté..."})
                     // }
@@ -117,7 +147,8 @@ class SignIn extends Component {
                 email, 
                 warning, 
                 connexion, 
-                already
+                already,
+                loading
             } = this.state;
             const {styleTitle, containerStyle, buttonStyle} = formStyles
             warning !== '' ? setTimeout(() => {
@@ -149,6 +180,7 @@ class SignIn extends Component {
                 <Text style={{color: "blue"}}>Type de connexion : {connexion.type}</Text>
                 <Text style={{color: "blue"}}>Effectivité: {connexion.effectiveType}</Text>
                 {already && <FormValidationMessage>Vous êtes déjà connecté !</FormValidationMessage>}
+                {loading && <ActivityIndicator/>}
                 <Button 
                     onPress={this.signInSubmit}
                     buttonStyle={buttonStyle}
