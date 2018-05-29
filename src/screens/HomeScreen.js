@@ -11,7 +11,7 @@ import RNFetchBlob from "react-native-fetch-blob";
 import Logo from "../components/Logo";
 import { homeStyles } from "../styles";
 
-export default class HomeScreen extends Component {
+export class HomeScreen extends Component {
   state = {
     logIn: false,
     avatar: ""
@@ -69,9 +69,11 @@ export default class HomeScreen extends Component {
     console.log("AVATAR: ", avatar);
     return (
       <View style={container}>
-        <ImageBackground source={{ uri: avatar }} style={img} blurRadius={4}>
-          <View style={triangle} />
-        </ImageBackground>
+        {avatar && (
+          <ImageBackground source={{ uri: avatar }} style={img} blurRadius={4}>
+            <View style={triangle} />
+          </ImageBackground>
+        )}
         <Button
           title={logIn ? "Déconnexion" : "Connexion"}
           onPress={this.asyncLogOff}

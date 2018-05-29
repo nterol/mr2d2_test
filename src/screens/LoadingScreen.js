@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import Logo from "../components/Logo";
 
-export default class LoadingScreen extends Component {
+export class LoadingScreen extends Component {
   //
 
   constructor() {

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import SignIn from "../components/SignIn";
 import { View, Button } from "react-native";
 
-export default class SignInScreen extends Component {
+export class SignInScreen extends Component {
   render() {
     const { navigation } = this.props;
     return (
