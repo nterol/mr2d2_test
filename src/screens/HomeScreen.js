@@ -5,9 +5,11 @@ import {
   ActivityIndicator,
   NetInfo,
   AsyncStorage,
-  Image
+  ImageBackground
 } from "react-native";
+import RNFetchBlob from "react-native-fetch-blob";
 import Logo from "../components/Logo";
+import { homeStyles } from "../styles";
 
 export default class HomeScreen extends Component {
   state = {
@@ -56,16 +58,20 @@ export default class HomeScreen extends Component {
     this.props.navigation.navigate("Auth");
   };
 
+  // deletePic = async () => {
+  //   const filePath = `${RNFetchBlob.fs.dirs.DocumentDir}/avatar.png`;
+  // };
+
   render() {
     const { navigation } = this.props;
     const { logIn, avatar } = this.state;
+    const { container, formerContainer, triangle, img } = homeStyles;
     console.log("AVATAR: ", avatar);
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <Image
-          source={require(avatar)}
-          style={{ width: 200, height: 200, borderRadius: 50 }}
-        />
+      <View style={container}>
+        <ImageBackground source={{ uri: avatar }} style={img} blurRadius={4}>
+          <View style={triangle} />
+        </ImageBackground>
         <Button
           title={logIn ? "Déconnexion" : "Connexion"}
           onPress={this.asyncLogOff}
