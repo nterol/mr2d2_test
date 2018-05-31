@@ -66,14 +66,8 @@ export class HomeScreen extends Component {
     const { navigation } = this.props;
     const { logIn, avatar } = this.state;
     const { container, formerContainer, triangle, img } = homeStyles;
-    console.log("AVATAR: ", avatar);
     return (
       <View style={container}>
-        {avatar && (
-          <ImageBackground source={{ uri: avatar }} style={img} blurRadius={4}>
-            <View style={triangle} />
-          </ImageBackground>
-        )}
         <Button
           title={logIn ? "Déconnexion" : "Connexion"}
           onPress={this.asyncLogOff}

@@ -94,9 +94,20 @@ class SignIn extends Component {
     this.cancelable.promise
       .then(res => {
         const [u] = res.data.user;
-        const { authentication_token: auth } = u;
-
-        AsyncStorage.setItem("token", auth);
+        console.log("USER INFO", u);
+        const {
+          authentication_token: auth,
+          lib_frst_name: firstName,
+          lib_last_name: lastName,
+          email
+        } = u;
+        console.log(auth, firstName, lastName, email);
+        AsyncStorage.multiSet([
+          ["token", auth],
+          ["firstName", firstName],
+          ["lastName", lastName],
+          ["email", email]
+        ]);
         return Promise.all([
           RNFetchBlob.config({
             // fileCache: true,
@@ -111,7 +122,7 @@ class SignIn extends Component {
           ? console.log("Image non sauvegardée")
           : AsyncStorage.setItem("avatar", imagePath);
         this.setState({ ...this.state, loading: false });
-        this.props.navigation.navigate("Home");
+        this.props.navigation.navigate("Profile");
       })
       .catch(e => console.log("Error : ", e));
 
